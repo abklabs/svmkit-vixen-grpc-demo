@@ -60,7 +60,7 @@ defaults):
 | vixen:docker-payload       | The path to the vixen-server docker image tarball.                | vixen-server.tar.gz
 | vixen:vixen-toml           | The path to the vixen.toml file.                                  | vixen-server/vixen.example.toml
 | vixen:vixen-port           | The port to run the vixen server on.                              | 9000
-| validator:instanceType     | The AWS instance type to use for all of the nodes.                | t3.medium
+| validator:instanceType     | The AWS instance type to use for all of the nodes.                | t3.2xlarge
 | validator:instanceArch     | The AWS instance architecture type to use for the AMI lookup.     | x86_64
 | yellowstone:grpc-port      | The port to run the yellowstone gRPC server on                    | 10000
 
