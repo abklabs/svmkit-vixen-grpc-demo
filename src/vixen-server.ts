@@ -128,7 +128,6 @@ function readGrpcSocketSync(newEndpoint:string) : string{
 }
 const updatedToml = grpcAddress.apply((addr) => readGrpcSocketSync(addr));
 
-
 const configCopy = new remote.CopyFile("vixen-config-copy", {
   connection,
   localPath: updatedToml,

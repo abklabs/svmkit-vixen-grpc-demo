@@ -3,7 +3,6 @@ import * as aws from "@pulumi/aws";
 import * as tls from "@pulumi/tls";
 import * as fs from "fs";
 
-import { geyserSetupScriptContent } from "./grpc_geyser";
 import { externalSg, internalSg } from "./network";
 
 const validatorConfig = new pulumi.Config("validator");
