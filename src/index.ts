@@ -4,7 +4,12 @@ import * as svmkit from "@svmkit/pulumi-svmkit";
 
 import { sshKey, instance } from "./validator";
 import { geyserPluginArgs } from "./grpc_geyser";
-import { vixenInstance, sshKey as vixenSshKey, connection as vixenConnection, dockerRunCmd } from "./vixen-server";
+import {
+  vixenInstance,
+  sshKey as vixenSshKey,
+  connection as vixenConnection,
+  dockerRunCmd,
+} from "./vixen-server";
 
 const RPC_PORT = 8899;
 const GOSSIP_PORT = 8001;
@@ -162,4 +167,7 @@ const dockerRun = new remote.Command(
 // Expose information required to SSH to the validator host.
 export const nodes_name = ["validator", "vixenInstance"];
 export const nodes_public_ip = [instance.publicIp, vixenInstance.publicIp];
-export const nodes_private_key = [sshKey.privateKeyOpenssh, vixenSshKey.privateKeyOpenssh];
+export const nodes_private_key = [
+  sshKey.privateKeyOpenssh,
+  vixenSshKey.privateKeyOpenssh,
+];
