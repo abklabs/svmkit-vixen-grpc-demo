@@ -3,8 +3,13 @@ import { remote, types } from "@pulumi/command";
 import * as svmkit from "@svmkit/pulumi-svmkit";
 
 import { sshKey, instance } from "./validator";
-import { GRPC_CONFIG_PATH, allowGrpcPort} from "./grpc_geyser";
-import { vixenInstance, vixenPublicIp, sshKey as vixenSshKey, connection as vixenConnection, dockerRunCmd } from "./vixen-server";
+import { geyserPluginArgs } from "./grpc_geyser";
+import {
+  vixenInstance,
+  sshKey as vixenSshKey,
+  connection as vixenConnection,
+  dockerRunCmd,
+} from "./vixen-server";
 
 const RPC_PORT = 8899;
 const GOSSIP_PORT = 8001;
@@ -97,6 +102,7 @@ const validator = new svmkit.validator.Agave(
       identity: validatorKey.json,
       voteAccount: voteAccountKey.json,
     },
+    geyserPlugin: geyserPluginArgs,
     flags: {
       onlyKnownRPC: false,
       rpcPort: RPC_PORT,
@@ -114,13 +120,6 @@ const validator = new svmkit.validator.Agave(
       rpcFaucetAddress: rpcFaucetAddress,
       fullRpcAPI: true,
       noVoting: false,
-      geyserPluginAlwaysEnabled: true,
-      geyserPluginConfig: [GRPC_CONFIG_PATH],
-      // expectedGenesisHash: genesis.genesisHash,
-      // extraFlags: [
-      //   "--enable-extended-tx-metadata-storage",
-      //   "--enable-rpc-transaction-history",
-      // ]
     },
   },
   {
@@ -156,20 +155,19 @@ const tuner = new svmkit.tuner.Tuner(
   },
 );
 
-// Expose yellowstone-grpc port so that it can interact with vixen vixen-server
-// Needs to depend on validator bc validator sets up ufw
-const firewallCmd = allowGrpcPort(connection, [validator, vixenInstance]);
-
-const dockerRun = new remote.Command("docker-run", {
-  connection: vixenConnection,
-  create: dockerRunCmd,
-}, { dependsOn: [firewallCmd] });
+const dockerRun = new remote.Command(
+  "docker-run",
+  {
+    connection: vixenConnection,
+    create: dockerRunCmd,
+  },
+  { dependsOn: [validator] },
+);
 
 // Expose information required to SSH to the validator host.
 export const nodes_name = ["validator", "vixenInstance"];
 export const nodes_public_ip = [instance.publicIp, vixenInstance.publicIp];
-export const nodes_private_key = [sshKey.privateKeyOpenssh, vixenSshKey.privateKeyOpenssh];
-// export const tuner_params = tunerParams;
-export const stake_account_key = [stakeAccountKey.publicKey];
-export const vote_account_key = [voteAccountKey.publicKey];
-
+export const nodes_private_key = [
+  sshKey.privateKeyOpenssh,
+  vixenSshKey.privateKeyOpenssh,
+];

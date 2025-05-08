@@ -35,7 +35,7 @@ export const internalSg = new aws.ec2.SecurityGroup("internal-access", {
       fromPort: 0,
       toPort: 0,
       self: true,
-    }
+    },
   ],
   egress: [
     {
